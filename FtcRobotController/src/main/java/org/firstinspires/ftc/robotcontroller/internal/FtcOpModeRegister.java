@@ -66,5 +66,8 @@ public class FtcOpModeRegister implements OpModeRegister {
         /**
          * Any manual OpMode class registrations should go here.
          */
+        //manager.register("MainOpMode" ,MainOpMode.class);
+        //manager.register("Test" ,TestDcmotorServo.class);
+
     }
 }
