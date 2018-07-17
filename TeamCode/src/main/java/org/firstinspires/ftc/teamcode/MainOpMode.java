@@ -45,13 +45,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @TeleOp(name = "Main", group = "Main")
 //@Disabled
 public class MainOpMode extends OpMode {
-    private double startpos_blue = 1.0;
-    private double startpos_orange = 0.15;
-    private double startpos_turntable = 0.50;
-    private double endpos_o_turntable = 0.00;
-    private double endpos_b_turntable = 1.00;
-    private double endpos_orange = 1.00;
-    private double endpos_blue = 0.25;
+    final double startpos_blue = 1.0;
+    final double startpos_orange = 0.15;
+    final double startpos_turntable = 0.50;
+    final double endpos_o_turntable = 0.00;
+    final double endpos_b_turntable = 1.00;
+    final double endpos_orange = 1.00;
+    final double endpos_blue = 0.25;
+    final double colorX = 0.4;
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor motorLeft1 = null;
     private DcMotor motorLeft2 = null;
@@ -251,7 +252,7 @@ public class MainOpMode extends OpMode {
         double d;
         x=checkZero((R+G+B)/3);
         d=checkZero((Math.abs(R-x)+Math.abs(G-x)+Math.abs(B-x))/x);
-        if (d>0.4){
+        if (d>colorX){
             //Not empty
             x=checkZero((R+B) /2);
             d=checkZero((R-B)/x);
@@ -259,14 +260,14 @@ public class MainOpMode extends OpMode {
                 //RedOrYellow
                 x=checkZero((G+B)/2);
                 d=checkZero((G-B)/x);
-                if (d>+0.4){
+                if (d>+colorX){
                     //Yellow
                     return Color.YELLOW;
                 }
                 else
                     return Color.RED;
             }
-            else if(d<-0.4){
+            else if(d<-colorX){
                 //Blue
                 return Color.BLUE;
             }

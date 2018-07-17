@@ -37,21 +37,23 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorColor;
 
 /**
  * Demonstrates empty OpMode
  */
-@TeleOp(name = "TestDcmotorServoOpMode", group = "Test")
+@TeleOp(name = "TestOpMode", group = "Test")
 //@Disabled
-public class TestDcmotorServoOpMode extends OpMode {
-    double startpos_blue = 1.0;
-    double startpos_orange = 0.15;
-    double startpos_turntable = 0.50;
-    double endpos_o_turntable = 0.00;
-    double endpos_b_turntable = 1.00;
-    double endpos_orange = 1.00;
-    double endpos_blue = 0.25;
+public class TestOpMode extends OpMode {
+    final double startpos_blue = 1.0;
+    final double startpos_orange = 0.15;
+    final double startpos_turntable = 0.50;
+    final double endpos_o_turntable = 0.00;
+    final double endpos_b_turntable = 1.00;
+    final double endpos_orange = 1.00;
+    final double endpos_blue = 0.25;
+    final double colorX = 0.4;
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor motorLeft1 = null;
     private DcMotor motorLeft2 = null;
@@ -65,8 +67,9 @@ public class TestDcmotorServoOpMode extends OpMode {
     private Servo servoorangedoor = null; //12
     private Servo servobluedoor = null;//13
     private ColorSensor sensorColor = null;//
-    private enum Color{
-        UNKNOWN,EMPTY,RED,BLUE,YELLOW;
+
+    private enum Color {
+        UNKNOWN, EMPTY, RED, BLUE, YELLOW;
     }
 
     @Override
@@ -171,8 +174,8 @@ public class TestDcmotorServoOpMode extends OpMode {
             servoturntable.setPosition(endpos_b_turntable);
         } else if (gamepad2.dpad_right == true) {
             servoturntable.setPosition(endpos_o_turntable);
-        } else if (gamepad2.right_trigger>0.3){
-            switch (getColor(sensorColor)){
+        } else if (gamepad2.right_trigger > 0.3) {
+            switch (getColor(sensorColor)) {
                 case RED:
                 case YELLOW:
                     servoturntable.setPosition(endpos_o_turntable);
@@ -183,8 +186,7 @@ public class TestDcmotorServoOpMode extends OpMode {
                 default:
                     servoturntable.setPosition(startpos_turntable);
             }
-        }
-        else {
+        } else {
             servoturntable.setPosition(startpos_turntable);
         }
         if (gamepad2.x == true) {
@@ -311,43 +313,39 @@ public class TestDcmotorServoOpMode extends OpMode {
         telemetry.addData("B", color.blue());
 
     }
-    private Color getColor(ColorSensor color)
-    {
-        double R=color.red();
-        double G=color.green();
-        double B=color.blue();
+
+    private Color getColor(ColorSensor color) {
+        double R = color.red();
+        double G = color.green();
+        double B = color.blue();
         double x;
         double d;
-        x=(R+G+B)/3;
-        d=(Math.abs(R-x)+Math.abs(G-x)+Math.abs(B-x))/x;
-        if (d>0.4){
+        x = (R + G + B) / 3;
+        d = (Math.abs(R - x) + Math.abs(G - x) + Math.abs(B - x)) / x;
+        if (d > colorX) {
             //Not empty
-            x=(R+B)/2;
-            d=(R-B)/x;
-            if(d>+0.4){
+            x = (R + B) / 2;
+            d = (R - B) / x;
+            if (d > +colorX) {
                 //RedOrYellow
-                x=(G+B)/2;
-                d=(G-B)/x;
-                if (d>+0.4){
+                x = (G + B) / 2;
+                d = (G - B) / x;
+                if (d > +colorX) {
                     //Yellow
                     return Color.YELLOW;
-                }
-                else
+                } else
                     return Color.RED;
-            }
-            else if(d<-0.4){
+            } else if (d < -colorX) {
                 //Blue
                 return Color.BLUE;
             }
             //!!!!!!
-            else{
-                    return Color.UNKNOWN;
+            else {
+                return Color.UNKNOWN;
             }
-        }
-        else {
+        } else {
             return Color.EMPTY;
         }
-
 
     }
 
