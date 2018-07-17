@@ -33,16 +33,15 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * Demonstrates empty OpMode
  */
-@TeleOp(name = "0", group = "ColorSensorTest")
+@TeleOp(name = "1", group = "Test")
 //@Disabled
-public class ColorSensorTest_0_OpMode extends OpMode {
+public class TestColorSensor_1_OpMode extends OpMode {
     private double startpos_blue = 1.0;
     private double startpos_orange = 0.15;
     private double startpos_turntable = 0.50;
@@ -62,7 +61,7 @@ public class ColorSensorTest_0_OpMode extends OpMode {
     private Servo servoturntable = null;//11
     private Servo servoorangedoor = null; //12
     private Servo servobluedoor = null;//13
-    private NormalizedColorSensor sensorColor = null;//
+    private ColorSensor sensorColor = null;//
     private enum Color{
         UNKNOWN,EMPTY,RED,BLUE,YELLOW;
     }
@@ -91,7 +90,7 @@ public class ColorSensorTest_0_OpMode extends OpMode {
         motorhangr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorhangl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //motor behavior
-        sensorColor = hardwareMap.get(NormalizedColorSensor.class,"color");
+        sensorColor = hardwareMap.colorSensor.get("color");
         //
     }
 
@@ -136,6 +135,7 @@ public class ColorSensorTest_0_OpMode extends OpMode {
         } else if (gamepad2.dpad_right == true) {
             servoturntable.setPosition(endpos_o_turntable);
         } else if (gamepad2.right_trigger>0.3){
+            halfPower();
             switch (getColor(sensorColor)){
                 case RED:
                 case YELLOW:
@@ -240,11 +240,11 @@ public class ColorSensorTest_0_OpMode extends OpMode {
 
     }
 
-    private Color getColor(NormalizedColorSensor color)
+    private Color getColor(ColorSensor color)
     {
-        double R=color.getNormalizedColors().red;
-        double G=color.getNormalizedColors().green;
-        double B=color.getNormalizedColors().blue;
+        double R=color.red();
+        double G=color.green();
+        double B=color.blue();
         double x;
         double d;
         x=checkZero((R+G+B)/3);
@@ -284,6 +284,19 @@ public class ColorSensorTest_0_OpMode extends OpMode {
         if (x==0.0)
             x=0.0001;
         return x;
+    }
+
+    private void halfPower(){
+        halfDcMotorPower(motorLeft1);
+        halfDcMotorPower(motorLeft2);
+        halfDcMotorPower(motorRight1);
+        halfDcMotorPower(motorRight2);
+        halfDcMotorPower(motorupd);
+        halfDcMotorPower(motorupu);
+    }
+
+    private void halfDcMotorPower(DcMotor motor){
+        motor.setPower(motor.getPower()/2.0);
     }
 
 }
