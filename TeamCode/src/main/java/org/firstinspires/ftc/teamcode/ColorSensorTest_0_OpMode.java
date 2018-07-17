@@ -29,22 +29,20 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * Demonstrates empty OpMode
  */
-@TeleOp(name = "Main", group = "Main")
+@TeleOp(name = "0", group = "ColorSensorTest")
 //@Disabled
-public class MainOpMode extends OpMode {
+public class ColorSensorTest_0_OpMode extends OpMode {
     private double startpos_blue = 1.0;
     private double startpos_orange = 0.15;
     private double startpos_turntable = 0.50;
@@ -64,7 +62,7 @@ public class MainOpMode extends OpMode {
     private Servo servoturntable = null;//11
     private Servo servoorangedoor = null; //12
     private Servo servobluedoor = null;//13
-    private ColorSensor sensorColor = null;//
+    private NormalizedColorSensor sensorColor = null;//
     private enum Color{
         UNKNOWN,EMPTY,RED,BLUE,YELLOW;
     }
@@ -93,7 +91,7 @@ public class MainOpMode extends OpMode {
         motorhangr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorhangl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //motor behavior
-        sensorColor = hardwareMap.colorSensor.get("color");
+        sensorColor = hardwareMap.get(NormalizedColorSensor.class,"color");
         //
     }
 
@@ -248,11 +246,11 @@ public class MainOpMode extends OpMode {
 
     }
 
-    private Color getColor(ColorSensor color)
+    private Color getColor(NormalizedColorSensor color)
     {
-        double R=color.red();
-        double G=color.green();
-        double B=color.blue();
+        double R=color.getNormalizedColors().red;
+        double G=color.getNormalizedColors().green;
+        double B=color.getNormalizedColors().blue;
         double x;
         double d;
         x=checkZero((R+G+B)/3);

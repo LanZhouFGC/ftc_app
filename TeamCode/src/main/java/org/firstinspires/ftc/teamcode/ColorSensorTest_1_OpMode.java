@@ -29,22 +29,34 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
+
 
 /**
- * Demonstrates empty OpMode
+ * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
+ * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
+ * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
+ * class is instantiated on the Robot Controller and executed.
+ *
+ * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
+ * It includes all the skeletal structure that all linear OpModes contain.
+ *
+ * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
+ * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@TeleOp(name = "Main", group = "Main")
+
+@TeleOp(name="1", group="ColorSensorTest")
 //@Disabled
-public class MainOpMode extends OpMode {
+public class ColorSensorTest_1_OpMode extends LinearOpMode {
+
+    // Declare OpMode members.
     private double startpos_blue = 1.0;
     private double startpos_orange = 0.15;
     private double startpos_turntable = 0.50;
@@ -67,126 +79,6 @@ public class MainOpMode extends OpMode {
     private ColorSensor sensorColor = null;//
     private enum Color{
         UNKNOWN,EMPTY,RED,BLUE,YELLOW;
-    }
-
-    @Override
-    public void init() {
-        telemetry.addData("Status", "Initialized");
-        motorLeft1 = hardwareMap.dcMotor.get("l1");
-        motorLeft2 = hardwareMap.dcMotor.get("l2");
-        motorRight1 = hardwareMap.dcMotor.get("r1");
-        motorRight2 = hardwareMap.dcMotor.get("r2");
-        //chassis drive above
-        motorupd = hardwareMap.dcMotor.get("upd");
-        motorupu = hardwareMap.dcMotor.get("upu");
-        motorhangl = hardwareMap.dcMotor.get("hl");
-        motorhangr = hardwareMap.dcMotor.get("hr");
-        //functional motor above
-        servoturntable = hardwareMap.servo.get("stt");
-        servoorangedoor = hardwareMap.servo.get("sod");
-        servobluedoor = hardwareMap.servo.get("sbd");
-        //functional servo above
-        motorLeft1.setDirection(DcMotor.Direction.REVERSE);
-        motorLeft2.setDirection(DcMotor.Direction.REVERSE);
-        motorhangl.setDirection(DcMotor.Direction.REVERSE);
-        //motor direction
-        motorhangr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorhangl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //motor behavior
-        sensorColor = hardwareMap.colorSensor.get("color");
-        //
-    }
-
-    /*
-     * Code to run when the op mode is first enabled goes here
-     * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#start()
-     */
-    @Override
-    public void init_loop() {
-    }
-
-    /*
-     * This method will be called ONCE when start is pressed
-     * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#loop()
-     */
-    @Override
-    public void start() {
-        runtime.reset();
-        servoorangedoor.setPosition(startpos_orange);
-        servoturntable.setPosition(startpos_turntable);
-        servobluedoor.setPosition(startpos_blue);
-    }
-
-    /*
-     * This method will be called repeatedly in a loop
-     * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#loop()
-     */
-    @Override
-    public void loop() {
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-
-        arcadeDrive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, true);
-        if (gamepad1.a == true) {
-            motorupd.setPower(1.0);
-            motorupu.setPower(1.0);
-        } else {
-            motorupd.setPower(0);
-            motorupu.setPower(0);
-        }
-        if (gamepad2.dpad_left == true) {
-            servoturntable.setPosition(endpos_b_turntable);
-        } else if (gamepad2.dpad_right == true) {
-            servoturntable.setPosition(endpos_o_turntable);
-        } else if (gamepad2.right_trigger>0.3){
-            switch (getColor(sensorColor)){
-                case RED:
-                case YELLOW:
-                    servoturntable.setPosition(endpos_o_turntable);
-                    break;
-                case BLUE:
-                    servoturntable.setPosition(endpos_b_turntable);
-                    break;
-                default:
-                    servoturntable.setPosition(startpos_turntable);
-                    break;
-            }
-        }
-        else {
-            servoturntable.setPosition(startpos_turntable);
-        }
-        if (gamepad2.x == true) {
-            servobluedoor.setPosition(endpos_blue);
-        } else {
-            servobluedoor.setPosition(startpos_blue);
-        }
-        if (gamepad2.y == true) {
-            servoorangedoor.setPosition(endpos_orange);
-        } else {
-            servoorangedoor.setPosition(startpos_orange);
-        }
-        if (gamepad2.left_bumper == true) {
-            motorhangl.setPower(-1.0);
-            motorhangr.setPower(-1.0);
-        } else if (gamepad2.right_bumper == true) {
-            motorhangl.setPower(1.0);
-            motorhangr.setPower(1.0);
-        } else {
-
-            motorhangl.setPower(0.0);
-            motorhangr.setPower(0.0);
-        }
-        if (gamepad1.right_stick_y >= 0.5 || gamepad1.right_stick_y <= -0.5) {
-            motorLeft1.setPower(-1.0);
-            motorRight1.setPower(-1.0);
-            motorRight2.setPower(1.0);
-            motorLeft2.setPower(1.0);
-        }
-        else {
-            motorLeft1.setPower(0.0);
-            motorRight1.setPower(0.0);
-            motorRight2.setPower(0.0);
-            motorLeft2.setPower(0.0);
-        }
     }
 
     private void arcadeDrive(double moveValue, double rotateValue, boolean squaredInputs) {
@@ -294,4 +186,109 @@ public class MainOpMode extends OpMode {
         return x;
     }
 
+
+    @Override
+    public void runOpMode() {
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
+
+        motorLeft1 = hardwareMap.dcMotor.get("l1");
+        motorLeft2 = hardwareMap.dcMotor.get("l2");
+        motorRight1 = hardwareMap.dcMotor.get("r1");
+        motorRight2 = hardwareMap.dcMotor.get("r2");
+        //chassis drive above
+        motorupd = hardwareMap.dcMotor.get("upd");
+        motorupu = hardwareMap.dcMotor.get("upu");
+        motorhangl = hardwareMap.dcMotor.get("hl");
+        motorhangr = hardwareMap.dcMotor.get("hr");
+        //functional motor above
+        servoturntable = hardwareMap.servo.get("stt");
+        servoorangedoor = hardwareMap.servo.get("sod");
+        servobluedoor = hardwareMap.servo.get("sbd");
+        //functional servo above
+        motorLeft1.setDirection(DcMotor.Direction.REVERSE);
+        motorLeft2.setDirection(DcMotor.Direction.REVERSE);
+        motorhangl.setDirection(DcMotor.Direction.REVERSE);
+        //motor direction
+        motorhangr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorhangl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //motor behavior
+        sensorColor = hardwareMap.colorSensor.get("color");
+
+        // Wait for the game to start (driver presses PLAY)
+        waitForStart();
+        runtime.reset();
+        servoorangedoor.setPosition(startpos_orange);
+        servoturntable.setPosition(startpos_turntable);
+        servobluedoor.setPosition(startpos_blue);
+
+        // run until the end of the match (driver presses STOP)
+        while (opModeIsActive()) {
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.update();
+
+            arcadeDrive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, true);
+            if (gamepad1.a == true) {
+                motorupd.setPower(1.0);
+                motorupu.setPower(1.0);
+            } else {
+                motorupd.setPower(0);
+                motorupu.setPower(0);
+            }
+            if (gamepad2.dpad_left == true) {
+                servoturntable.setPosition(endpos_b_turntable);
+            } else if (gamepad2.dpad_right == true) {
+                servoturntable.setPosition(endpos_o_turntable);
+            } else if (gamepad2.right_trigger>0.3){
+                switch (getColor(sensorColor)){
+                    case RED:
+                    case YELLOW:
+                        servoturntable.setPosition(endpos_o_turntable);
+                        break;
+                    case BLUE:
+                        servoturntable.setPosition(endpos_b_turntable);
+                        break;
+                    default:
+                        servoturntable.setPosition(startpos_turntable);
+                        break;
+                }
+            }
+            else {
+                servoturntable.setPosition(startpos_turntable);
+            }
+            if (gamepad2.x == true) {
+                servobluedoor.setPosition(endpos_blue);
+            } else {
+                servobluedoor.setPosition(startpos_blue);
+            }
+            if (gamepad2.y == true) {
+                servoorangedoor.setPosition(endpos_orange);
+            } else {
+                servoorangedoor.setPosition(startpos_orange);
+            }
+            if (gamepad2.left_bumper == true) {
+                motorhangl.setPower(-1.0);
+                motorhangr.setPower(-1.0);
+            } else if (gamepad2.right_bumper == true) {
+                motorhangl.setPower(1.0);
+                motorhangr.setPower(1.0);
+            } else {
+
+                motorhangl.setPower(0.0);
+                motorhangr.setPower(0.0);
+            }
+            if (gamepad1.right_stick_y >= 0.5 || gamepad1.right_stick_y <= -0.5) {
+                motorLeft1.setPower(-1.0);
+                motorRight1.setPower(-1.0);
+                motorRight2.setPower(1.0);
+                motorLeft2.setPower(1.0);
+            }
+            else {
+                motorLeft1.setPower(0.0);
+                motorRight1.setPower(0.0);
+                motorRight2.setPower(0.0);
+                motorLeft2.setPower(0.0);
+            }
+        }
+    }
 }

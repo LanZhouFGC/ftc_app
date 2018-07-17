@@ -42,9 +42,9 @@ import org.firstinspires.ftc.robotcontroller.external.samples.SensorColor;
 /**
  * Demonstrates empty OpMode
  */
-@TeleOp(name = "TestDcmotorServo", group = "Test")
+@TeleOp(name = "TestDcmotorServoOpMode", group = "Test")
 //@Disabled
-public class TestDcmotorServo extends OpMode {
+public class TestDcmotorServoOpMode extends OpMode {
     double startpos_blue = 1.0;
     double startpos_orange = 0.15;
     double startpos_turntable = 0.50;
