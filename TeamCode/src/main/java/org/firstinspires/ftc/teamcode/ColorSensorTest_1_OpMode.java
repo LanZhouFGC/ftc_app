@@ -283,12 +283,6 @@ public class ColorSensorTest_1_OpMode extends LinearOpMode {
                 motorRight2.setPower(1.0);
                 motorLeft2.setPower(1.0);
             }
-            else {
-                motorLeft1.setPower(0.0);
-                motorRight1.setPower(0.0);
-                motorRight2.setPower(0.0);
-                motorLeft2.setPower(0.0);
-            }
         }
     }
 }
